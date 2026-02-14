@@ -1,0 +1,839 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Jay Patel — Public Health & Clinical Research</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500;1,600&family=Outfit:wght@300;400;500;600;700&family=JetBrains+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+:root {
+  --bg: #08090b;
+  --bg2: #0f1114;
+  --bg3: #161a1f;
+  --bg4: #1c2128;
+  --text: #eceae7;
+  --text-dim: #9399a4;
+  --accent: #c9f059;
+  --accent2: #59dbc9;
+  --warm: #f0a859;
+  --rose: #f07089;
+  --font-display: 'Playfair Display', Georgia, serif;
+  --font-body: 'Outfit', sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
+  --ease: cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+html { scroll-behavior: smooth; scrollbar-width: thin; scrollbar-color: var(--accent) var(--bg); }
+body { background: var(--bg); color: var(--text); font-family: var(--font-body); overflow-x: hidden; }
+::-webkit-scrollbar { width: 5px; }
+::-webkit-scrollbar-track { background: var(--bg); }
+::-webkit-scrollbar-thumb { background: var(--accent); border-radius: 3px; }
+
+/* ===== CURSOR GLOW ===== */
+.cursor-glow {
+  position: fixed; width: 350px; height: 350px; border-radius: 50%;
+  background: radial-gradient(circle, rgba(201,240,89,0.05) 0%, transparent 70%);
+  pointer-events: none; z-index: 9999; transform: translate(-50%, -50%);
+}
+
+/* ===== NAV ===== */
+nav {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
+  padding: 1rem 2.5rem;
+  display: flex; justify-content: space-between; align-items: center;
+  backdrop-filter: blur(24px); background: rgba(8,9,11,0.75);
+  border-bottom: 1px solid rgba(255,255,255,0.04);
+  transition: transform 0.4s var(--ease);
+}
+nav.hidden { transform: translateY(-100%); }
+
+.nav-logo { font-family: var(--font-display); font-size: 1.5rem; color: var(--text); text-decoration: none; font-weight: 600; }
+.nav-logo span { color: var(--accent); }
+
+.nav-links { display: flex; gap: 2rem; list-style: none; align-items: center; }
+.nav-links a {
+  color: var(--text-dim); text-decoration: none; font-size: 0.9rem; font-weight: 500;
+  letter-spacing: 0.04em; transition: color 0.3s; position: relative;
+}
+.nav-links a:hover { color: var(--accent); }
+
+.nav-cta {
+  background: var(--accent); color: var(--bg); padding: 0.55rem 1.3rem; border-radius: 100px;
+  font-weight: 600; font-size: 0.85rem; text-decoration: none; transition: all 0.3s; border: none; cursor: pointer;
+}
+.nav-cta:hover { background: #deff6e; transform: scale(1.05); box-shadow: 0 0 25px rgba(201,240,89,0.25); }
+
+.resume-btn {
+  background: transparent; color: var(--text); padding: 0.5rem 1.2rem; border-radius: 100px;
+  font-weight: 500; font-size: 0.85rem; text-decoration: none; transition: all 0.3s;
+  border: 1px solid rgba(255,255,255,0.15);
+}
+.resume-btn:hover { border-color: var(--accent); color: var(--accent); }
+
+.hamburger { display: none; flex-direction: column; gap: 5px; cursor: pointer; background: none; border: none; padding: 5px; }
+.hamburger span { width: 24px; height: 2px; background: var(--text); transition: all 0.3s; }
+
+/* ===== HERO ===== */
+.hero {
+  min-height: 100vh; display: flex; flex-direction: column; justify-content: center;
+  position: relative; padding: 7rem 2.5rem 3rem; overflow: hidden;
+}
+
+.hero-bg {
+  position: absolute; inset: 0;
+  background-image: linear-gradient(rgba(201,240,89,0.025) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(201,240,89,0.025) 1px, transparent 1px);
+  background-size: 80px 80px;
+  mask-image: radial-gradient(ellipse 60% 55% at 50% 45%, black 20%, transparent 75%);
+}
+
+.hero-orb { position: absolute; border-radius: 50%; filter: blur(100px); animation: orbFloat 10s ease-in-out infinite alternate; }
+.hero-orb-1 { width: 550px; height: 550px; background: rgba(201,240,89,0.07); top: -150px; right: -100px; }
+.hero-orb-2 { width: 400px; height: 400px; background: rgba(89,219,201,0.05); bottom: -100px; left: -150px; animation-delay: -4s; }
+@keyframes orbFloat { 0% { transform: translate(0,0) scale(1); } 100% { transform: translate(25px,-25px) scale(1.08); } }
+
+.hero-content { max-width: 1100px; margin: 0 auto; width: 100%; position: relative; z-index: 2; }
+
+.hero-tag {
+  display: inline-flex; align-items: center; gap: 0.6rem;
+  font-family: var(--font-mono); font-size: 0.85rem; color: var(--accent);
+  margin-bottom: 1.8rem; letter-spacing: 0.08em; text-transform: uppercase;
+  opacity: 0; animation: fadeUp 0.7s 0.2s forwards;
+}
+.hero-tag .dot { width: 9px; height: 9px; background: var(--accent); border-radius: 50%; animation: pulse 2s infinite; }
+@keyframes pulse { 0%,100% { opacity:1; transform:scale(1); } 50% { opacity:0.4; transform:scale(1.4); } }
+
+.hero-name {
+  font-family: var(--font-display); font-size: clamp(4rem, 10vw, 7.5rem);
+  line-height: 0.95; letter-spacing: -0.02em; margin-bottom: 1.2rem; font-weight: 600;
+  opacity: 0; animation: fadeUp 0.7s 0.35s forwards;
+}
+
+.hero-role {
+  font-family: var(--font-body); font-size: clamp(1.2rem, 2.5vw, 1.7rem);
+  color: var(--text-dim); font-weight: 300; margin-bottom: 2rem; line-height: 1.5;
+  max-width: 650px;
+  opacity: 0; animation: fadeUp 0.7s 0.5s forwards;
+}
+.hero-role strong { color: var(--text); font-weight: 500; }
+
+.hero-stats {
+  display: flex; gap: 2rem; flex-wrap: wrap;
+  opacity: 0; animation: fadeUp 0.7s 0.65s forwards;
+}
+
+.hero-stat {
+  background: var(--bg2); border: 1px solid rgba(255,255,255,0.05); border-radius: 14px;
+  padding: 1.2rem 1.8rem; min-width: 180px; transition: all 0.4s var(--ease);
+}
+.hero-stat:hover { border-color: rgba(201,240,89,0.15); transform: translateY(-3px); }
+
+.hero-stat-number { font-family: var(--font-display); font-size: 2.2rem; color: var(--accent); line-height: 1; font-weight: 600; }
+.hero-stat-label { font-size: 0.82rem; color: var(--text-dim); margin-top: 0.3rem; font-weight: 400; }
+
+@keyframes fadeUp { from { opacity:0; transform:translateY(25px); } to { opacity:1; transform:translateY(0); } }
+
+.scroll-hint {
+  position: absolute; bottom: 1.5rem; left: 50%; transform: translateX(-50%);
+  display: flex; flex-direction: column; align-items: center; gap: 0.4rem;
+  opacity: 0; animation: fadeUp 0.7s 1s forwards;
+}
+.scroll-hint span { font-size: 0.68rem; color: var(--text-dim); letter-spacing: 0.15em; text-transform: uppercase; }
+.scroll-arrow { font-size: 1.2rem; color: var(--accent); animation: bounce 2s infinite; }
+@keyframes bounce { 0%,100% { transform:translateY(0); } 50% { transform:translateY(6px); } }
+
+/* ===== DASHBOARD (Cards section right after hero) ===== */
+.dashboard {
+  max-width: 1200px; margin: 0 auto; padding: 2rem 2.5rem 4rem;
+}
+
+.dash-header {
+  display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 2rem;
+}
+.dash-title {
+  font-family: var(--font-display); font-size: 2.5rem; font-weight: 600;
+}
+.dash-subtitle { font-size: 1rem; color: var(--text-dim); }
+
+/* Tab system */
+.tabs {
+  display: flex; gap: 0.5rem; margin-bottom: 2rem; flex-wrap: wrap;
+}
+.tab-btn {
+  font-family: var(--font-body); font-size: 0.95rem; font-weight: 500;
+  padding: 0.6rem 1.4rem; border-radius: 100px; border: 1px solid rgba(255,255,255,0.08);
+  background: transparent; color: var(--text-dim); cursor: pointer; transition: all 0.3s var(--ease);
+}
+.tab-btn:hover { border-color: rgba(201,240,89,0.2); color: var(--text); }
+.tab-btn.active { background: var(--accent); color: var(--bg); border-color: var(--accent); font-weight: 600; }
+
+.tab-panel { display: none; }
+.tab-panel.active { display: block; animation: fadeIn 0.4s ease; }
+@keyframes fadeIn { from { opacity:0; transform:translateY(10px); } to { opacity:1; transform:translateY(0); } }
+
+/* ===== PROJECT CARDS ===== */
+.project-grid {
+  display: grid; grid-template-columns: repeat(auto-fill, minmax(340px, 1fr)); gap: 1.2rem;
+}
+
+.project-card {
+  background: var(--bg2); border: 1px solid rgba(255,255,255,0.05); border-radius: 16px;
+  padding: 1.8rem; transition: all 0.4s var(--ease); position: relative; overflow: hidden;
+  display: flex; flex-direction: column;
+}
+.project-card:hover { border-color: rgba(201,240,89,0.18); transform: translateY(-4px); box-shadow: 0 16px 50px rgba(0,0,0,0.3); }
+
+.project-badge {
+  display: inline-flex; align-items: center; font-family: var(--font-mono); font-size: 0.68rem;
+  color: var(--accent2); letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 0.8rem;
+  background: rgba(89,219,201,0.08); padding: 0.3rem 0.7rem; border-radius: 4px; width: fit-content;
+}
+
+.project-card h3 {
+  font-family: var(--font-display); font-size: 1.35rem; margin-bottom: 0.6rem; line-height: 1.3; font-weight: 600;
+}
+
+.project-card p {
+  font-size: 0.9rem; color: var(--text-dim); line-height: 1.65; margin-bottom: 1rem; flex: 1;
+}
+
+.project-tags { display: flex; flex-wrap: wrap; gap: 0.35rem; margin-bottom: 1.2rem; }
+.project-tags span {
+  font-family: var(--font-mono); font-size: 0.65rem; padding: 0.22rem 0.55rem;
+  background: rgba(201,240,89,0.06); border: 1px solid rgba(201,240,89,0.12);
+  border-radius: 4px; color: var(--text-dim);
+}
+
+.project-file-btn {
+  display: inline-flex; align-items: center; gap: 0.5rem;
+  padding: 0.65rem 1.2rem; background: rgba(201,240,89,0.08); border: 1px solid rgba(201,240,89,0.18);
+  border-radius: 10px; color: var(--accent); font-size: 0.85rem; font-weight: 500;
+  text-decoration: none; transition: all 0.3s var(--ease); width: fit-content;
+}
+.project-file-btn:hover { background: rgba(201,240,89,0.15); border-color: var(--accent); transform: translateX(3px); }
+.project-file-btn svg { width: 16px; height: 16px; }
+
+/* Related experience tooltip */
+.related-exp {
+  display: inline-flex; align-items: center; gap: 0.4rem; margin-top: 0.8rem;
+  font-size: 0.75rem; color: var(--warm); cursor: help; position: relative;
+}
+.related-exp .exp-dot { width: 6px; height: 6px; background: var(--warm); border-radius: 50%; }
+.related-exp .tooltip {
+  position: absolute; bottom: calc(100% + 8px); left: 0; background: var(--bg4);
+  border: 1px solid rgba(240,168,89,0.25); border-radius: 10px; padding: 0.8rem 1rem;
+  font-size: 0.8rem; color: var(--text); width: 280px; opacity: 0; pointer-events: none;
+  transition: all 0.3s var(--ease); transform: translateY(5px); z-index: 10; line-height: 1.5;
+}
+.related-exp:hover .tooltip { opacity: 1; transform: translateY(0); pointer-events: auto; }
+
+/* ===== EXPERIENCE CARDS ===== */
+.exp-list { display: flex; flex-direction: column; gap: 1.2rem; }
+
+.exp-card {
+  background: var(--bg2); border: 1px solid rgba(255,255,255,0.05); border-radius: 16px;
+  padding: 2rem; display: grid; grid-template-columns: 200px 1fr; gap: 2rem;
+  transition: all 0.4s var(--ease);
+}
+.exp-card:hover { border-color: rgba(201,240,89,0.12); }
+
+.exp-meta {}
+.exp-date { font-family: var(--font-mono); font-size: 0.75rem; color: var(--accent); letter-spacing: 0.05em; margin-bottom: 0.5rem; }
+.exp-type { font-size: 0.78rem; color: var(--text-dim); line-height: 1.4; }
+
+.exp-body h3 { font-family: var(--font-display); font-size: 1.5rem; font-weight: 600; margin-bottom: 0.2rem; }
+.exp-body .org { font-size: 1rem; color: var(--text-dim); margin-bottom: 1rem; font-weight: 400; }
+.exp-body .org span { opacity: 0.5; }
+
+.exp-highlights { display: flex; flex-direction: column; gap: 0.5rem; }
+.exp-highlights li {
+  font-size: 0.9rem; color: var(--text-dim); line-height: 1.6; list-style: none;
+  padding-left: 1.2rem; position: relative;
+}
+.exp-highlights li::before { content: '→'; position: absolute; left: 0; color: var(--accent); font-size: 0.8rem; }
+
+/* ===== PUBLICATIONS ===== */
+.pub-list { display: flex; flex-direction: column; gap: 1rem; }
+
+.pub-card {
+  background: var(--bg2); border: 1px solid rgba(255,255,255,0.05); border-radius: 14px;
+  padding: 1.8rem; display: flex; gap: 1.5rem; align-items: start;
+  transition: all 0.4s var(--ease);
+}
+.pub-card:hover { border-color: rgba(240,168,89,0.2); transform: translateX(4px); }
+
+.pub-year {
+  font-family: var(--font-display); font-size: 2rem; color: var(--warm); line-height: 1;
+  font-style: italic; font-weight: 600; min-width: 55px;
+}
+
+.pub-info { flex: 1; }
+.pub-info h4 { font-size: 1.05rem; line-height: 1.5; margin-bottom: 0.4rem; font-weight: 500; }
+.pub-info .journal { font-family: var(--font-mono); font-size: 0.72rem; color: var(--warm); letter-spacing: 0.04em; }
+.pub-info .authors { font-size: 0.82rem; color: var(--text-dim); margin-top: 0.3rem; }
+.pub-info .authors strong { color: var(--text); }
+
+.pub-actions { display: flex; gap: 0.5rem; flex-shrink: 0; align-self: center; }
+.pub-link {
+  padding: 0.5rem 1rem; border: 1px solid rgba(255,255,255,0.1); border-radius: 8px;
+  color: var(--text-dim); text-decoration: none; font-size: 0.82rem; transition: all 0.3s;
+  white-space: nowrap; display: flex; align-items: center; gap: 0.4rem;
+}
+.pub-link:hover { border-color: var(--warm); color: var(--warm); }
+.pub-link svg { width: 14px; height: 14px; }
+
+/* ===== EDUCATION & SKILLS (side-by-side bottom section) ===== */
+.bottom-section {
+  max-width: 1200px; margin: 0 auto; padding: 0 2.5rem 4rem;
+  display: grid; grid-template-columns: 1fr 1fr; gap: 2rem;
+}
+
+.bottom-block {}
+.bottom-block-title {
+  font-family: var(--font-display); font-size: 2rem; font-weight: 600; margin-bottom: 1.5rem;
+}
+
+/* Education */
+.edu-card {
+  background: var(--bg2); border: 1px solid rgba(255,255,255,0.05); border-radius: 14px;
+  padding: 1.8rem; margin-bottom: 1rem; position: relative; overflow: hidden;
+  transition: all 0.4s var(--ease);
+}
+.edu-card:hover { border-color: rgba(201,240,89,0.12); }
+
+.edu-card .gpa {
+  position: absolute; top: 1.2rem; right: 1.5rem;
+  font-family: var(--font-display); font-size: 2rem; color: var(--accent); font-style: italic; font-weight: 600;
+}
+.edu-card .degree { font-family: var(--font-display); font-size: 1.25rem; font-weight: 600; margin-bottom: 0.2rem; }
+.edu-card .school { font-size: 0.9rem; color: var(--text-dim); margin-bottom: 0.15rem; }
+.edu-card .major { font-size: 0.82rem; color: var(--accent2); margin-top: 0.5rem; }
+.edu-card .period { font-family: var(--font-mono); font-size: 0.7rem; color: var(--accent); letter-spacing: 0.06em; }
+
+/* Skills */
+.skill-group { margin-bottom: 1.2rem; }
+.skill-group-title {
+  font-size: 0.92rem; font-weight: 600; margin-bottom: 0.6rem; color: var(--text);
+}
+.skill-tags { display: flex; flex-wrap: wrap; gap: 0.4rem; }
+.skill-tag {
+  font-family: var(--font-mono); font-size: 0.7rem; padding: 0.3rem 0.65rem;
+  background: rgba(201,240,89,0.05); border: 1px solid rgba(201,240,89,0.1);
+  border-radius: 100px; color: var(--text-dim); transition: all 0.3s;
+}
+.skill-tag:hover { background: rgba(201,240,89,0.12); color: var(--accent); border-color: rgba(201,240,89,0.25); }
+
+/* ===== CONTACT ===== */
+.contact {
+  max-width: 1200px; margin: 0 auto; padding: 4rem 2.5rem; text-align: center;
+  border-top: 1px solid rgba(255,255,255,0.04);
+}
+.contact h2 { font-family: var(--font-display); font-size: clamp(2.5rem, 5vw, 3.5rem); font-weight: 600; margin-bottom: 1rem; }
+.contact .sub { color: var(--text-dim); font-size: 1.1rem; max-width: 450px; margin: 0 auto 2rem; line-height: 1.7; }
+
+.contact-links { display: flex; justify-content: center; gap: 1rem; flex-wrap: wrap; }
+.contact-link {
+  display: flex; align-items: center; gap: 0.6rem;
+  padding: 0.8rem 1.5rem; background: var(--bg2); border: 1px solid rgba(255,255,255,0.06);
+  border-radius: 100px; color: var(--text); text-decoration: none; font-size: 0.95rem; font-weight: 500;
+  transition: all 0.4s var(--ease);
+}
+.contact-link:hover { border-color: var(--accent); transform: translateY(-2px); }
+
+/* ===== FOOTER ===== */
+footer {
+  text-align: center; padding: 1.5rem; border-top: 1px solid rgba(255,255,255,0.03);
+  font-size: 0.75rem; color: var(--text-dim);
+}
+
+/* ===== REVEAL ===== */
+.reveal { opacity: 0; transform: translateY(30px); transition: all 0.7s var(--ease); }
+.reveal.visible { opacity: 1; transform: translateY(0); }
+
+/* ===== RESPONSIVE ===== */
+@media (max-width: 900px) {
+  nav { padding: 0.8rem 1.2rem; }
+  .nav-links { display: none; }
+  .hamburger { display: flex; }
+  .nav-links.open {
+    display: flex; flex-direction: column; position: absolute; top: 100%; left: 0; right: 0;
+    background: var(--bg); padding: 1.5rem; gap: 1.2rem; border-bottom: 1px solid rgba(255,255,255,0.05);
+  }
+  .hero { padding: 6rem 1.2rem 2.5rem; }
+  .dashboard, .bottom-section, .contact { padding-left: 1.2rem; padding-right: 1.2rem; }
+  .hero-stats { gap: 0.8rem; }
+  .hero-stat { min-width: 140px; padding: 1rem 1.2rem; }
+  .hero-stat-number { font-size: 1.8rem; }
+  .project-grid { grid-template-columns: 1fr; }
+  .exp-card { grid-template-columns: 1fr; gap: 0.8rem; }
+  .bottom-section { grid-template-columns: 1fr; }
+  .pub-card { flex-direction: column; gap: 0.8rem; }
+  .pub-actions { align-self: start; }
+}
+
+@media (max-width: 500px) {
+  .hero-stat { min-width: 100%; }
+  .hero-name { font-size: 3.2rem; }
+}
+</style>
+</head>
+<body>
+
+<div class="cursor-glow" id="cursorGlow"></div>
+
+<!-- NAV -->
+<nav id="navbar">
+  <a href="#" class="nav-logo">Jay<span>.</span></a>
+  <ul class="nav-links" id="navLinks">
+    <li><a href="#work">Work</a></li>
+    <li><a href="#education-section">Education</a></li>
+    <li><a href="#contact">Contact</a></li>
+    <li><a href="files/Resume_Jay_Patel.pdf" target="_blank" class="resume-btn">Resume ↓</a></li>
+  </ul>
+  <a href="#contact" class="nav-cta">Let's Connect</a>
+  <button class="hamburger" onclick="document.getElementById('navLinks').classList.toggle('open')">
+    <span></span><span></span><span></span>
+  </button>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-bg"></div>
+  <div class="hero-orb hero-orb-1"></div>
+  <div class="hero-orb hero-orb-2"></div>
+
+  <div class="hero-content">
+    <div class="hero-tag"><span class="dot"></span> Open to Opportunities</div>
+
+    <h1 class="hero-name">Jay Patel</h1>
+
+    <p class="hero-role">
+      <strong>Public health & clinical research professional</strong> turning complex health data 
+      into actionable insights — bridging epidemiology, biostatistics, and program evaluation 
+      to improve community outcomes.
+    </p>
+
+    <div class="hero-stats">
+      <div class="hero-stat">
+        <div class="hero-stat-number">1+</div>
+        <div class="hero-stat-label">Year as Biostatistician</div>
+      </div>
+      <div class="hero-stat">
+        <div class="hero-stat-number">2+</div>
+        <div class="hero-stat-label">Years Clinical Research</div>
+      </div>
+      <div class="hero-stat">
+        <div class="hero-stat-number">3</div>
+        <div class="hero-stat-label">Peer-Reviewed Papers</div>
+      </div>
+      <div class="hero-stat">
+        <div class="hero-stat-number">3.9</div>
+        <div class="hero-stat-label">GPA · MPH Biostatistics</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="scroll-hint">
+    <span>Explore my work</span>
+    <div class="scroll-arrow">↓</div>
+  </div>
+</section>
+
+<!-- DASHBOARD -->
+<div class="dashboard" id="work">
+  <div class="dash-header reveal">
+    <h2 class="dash-title">Work & Impact</h2>
+    <p class="dash-subtitle">Everything in one place.</p>
+  </div>
+
+  <div class="tabs reveal">
+    <button class="tab-btn active" onclick="switchTab('projects')">Projects</button>
+    <button class="tab-btn" onclick="switchTab('experience')">Experience</button>
+    <button class="tab-btn" onclick="switchTab('publications')">Publications</button>
+  </div>
+
+  <!-- ===== PROJECTS TAB ===== -->
+  <div class="tab-panel active" id="tab-projects">
+    <div class="project-grid">
+
+      <div class="project-card reveal">
+        <div class="project-badge">Program Evaluation</div>
+        <h3>Asthma 411 Consortium Annual Evaluation Report</h3>
+        <p>Led the full-cycle evaluation of a school-based asthma program spanning 364 campuses and 240,784 students. Documented 1,682 treatments, 5,012 reclaimed instructional hours, $157K+ financial benefit, and a 1:5 Social Return on Investment.</p>
+        <div class="project-tags">
+          <span>R</span><span>Power BI</span><span>Data Viz</span><span>Stakeholder Reports</span>
+        </div>
+        <a href="files/Asthma411_Evaluation_Report.pdf" target="_blank" class="project-file-btn">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="12" y1="18" x2="12" y2="12"/><polyline points="9 15 12 18 15 15"/></svg>
+          View Full Report (PDF)
+        </a>
+        <div class="related-exp">
+          <span class="exp-dot"></span> Biostatistics Intern · Texas Center for Patient Safety
+          <div class="tooltip">This report was produced during my internship with the Asthma 411 Program, where I conducted all data analysis, visualization, and stakeholder reporting across 10 ISDs.</div>
+        </div>
+      </div>
+
+      <div class="project-card reveal">
+        <div class="project-badge">Clinical Decision Tool</div>
+        <h3>Standing Delegation Order Algorithm</h3>
+        <p>Transformed complex SDO clinical guidance into a visual flowchart used across 12 school districts. Distinguishes severe vs. non-severe respiratory distress pathways, treatment dosing, reassessment timelines, and return-to-class criteria.</p>
+        <div class="project-tags">
+          <span>Clinical Protocol</span><span>Visual Communication</span><span>Surveillance</span>
+        </div>
+        <a href="files/SDO_Algorithm.pdf" target="_blank" class="project-file-btn">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="12" y1="18" x2="12" y2="12"/><polyline points="9 15 12 18 15 15"/></svg>
+          View Algorithm (PDF)
+        </a>
+        <div class="related-exp">
+          <span class="exp-dot"></span> Biostatistics Intern · Texas Center for Patient Safety
+          <div class="tooltip">I designed this visual algorithm to improve surveillance usability, enabling consistent identification and response to respiratory distress severity across all partner districts.</div>
+        </div>
+      </div>
+
+      <div class="project-card reveal">
+        <div class="project-badge">Research Publication</div>
+        <h3>AI-Generated VR Simulation for SBIRT Training</h3>
+        <p>Co-authored peer-reviewed paper on content validation of AI-generated VR scenarios using a modified Delphi method. Performed kappa (κ=0.80 for critical actions) and ICC reliability analyses on expert panel ratings.</p>
+        <div class="project-tags">
+          <span>SPSS</span><span>R</span><span>Kappa / ICC</span><span>Modified Delphi</span>
+        </div>
+        <a href="files/VR_SBIRT_Publication.pdf" target="_blank" class="project-file-btn">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="12" y1="18" x2="12" y2="12"/><polyline points="9 15 12 18 15 15"/></svg>
+          Read Publication (PDF)
+        </a>
+        <div class="related-exp">
+          <span class="exp-dot"></span> Graduate Research Assistant · UNTHSC College of Nursing
+          <div class="tooltip">I supported this research by building REDCap workflows, performing data validation in R, and conducting reliability analyses (ICC, kappa) that contributed to this publication in Clinical Simulation in Nursing.</div>
+        </div>
+      </div>
+
+      <div class="project-card reveal">
+        <div class="project-badge">Systems Modeling</div>
+        <h3>Asthma 411 Integration & Logic Models</h3>
+        <p>Developed models showing how Asthma 411 integrates three national frameworks (AFSI, SAMPRO, EXHALE) and a comprehensive logic model mapping inputs → activities → short/intermediate/long-term outcomes.</p>
+        <div class="project-tags">
+          <span>Logic Modeling</span><span>Program Design</span><span>Framework Synthesis</span>
+        </div>
+        <div style="display:flex;gap:0.5rem;flex-wrap:wrap;">
+          <a href="files/Asthma411_Integration_Model.pdf" target="_blank" class="project-file-btn">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="12" y1="18" x2="12" y2="12"/><polyline points="9 15 12 18 15 15"/></svg>
+            Integration Model
+          </a>
+          <a href="files/Logic_Model.png" target="_blank" class="project-file-btn">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="12" y1="18" x2="12" y2="12"/><polyline points="9 15 12 18 15 15"/></svg>
+            Logic Model
+          </a>
+        </div>
+        <div class="related-exp">
+          <span class="exp-dot"></span> Biostatistics Intern · Texas Center for Patient Safety
+          <div class="tooltip">Created as part of program evaluation to communicate how Asthma 411 builds upon and improves existing national school asthma management frameworks.</div>
+        </div>
+      </div>
+
+      <div class="project-card reveal">
+        <div class="project-badge">GIS & Data Visualization</div>
+        <h3>ASHA Membership Geospatial Analysis</h3>
+        <p>Created dot density maps in ArcGIS Pro visualizing ASHA membership distribution across the U.S. by professional discipline (school nurses, counselors, social workers, etc.) and tenure groups (&lt;1 to 26+ years).</p>
+        <div class="project-tags">
+          <span>ArcGIS Pro</span><span>Dot Density Mapping</span><span>Geospatial Analysis</span>
+        </div>
+        <div style="display:flex;gap:0.5rem;flex-wrap:wrap;">
+          <a href="files/ASHA_Disciplines_Map.pdf" target="_blank" class="project-file-btn">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="12" y1="18" x2="12" y2="12"/><polyline points="9 15 12 18 15 15"/></svg>
+            Disciplines Map
+          </a>
+          <a href="files/ASHA_Tenure_Map.pdf" target="_blank" class="project-file-btn">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="12" y1="18" x2="12" y2="12"/><polyline points="9 15 12 18 15 15"/></svg>
+            Tenure Map
+          </a>
+        </div>
+        <div class="related-exp">
+          <span class="exp-dot"></span> Biostatistics Intern · Texas Center for Patient Safety
+          <div class="tooltip">Developed as part of my geospatial analysis work, mapping organizational membership data to support strategic planning and stakeholder engagement.</div>
+        </div>
+      </div>
+
+      <div class="project-card reveal">
+        <div class="project-badge">Policy Analysis</div>
+        <h3>Texas HHW & Water Quality Policy Brief</h3>
+        <p>Authored a 7-page policy brief analyzing three approaches to reducing household hazardous waste contamination of Texas water supplies and dermatological health impacts. Recommended a statewide HHW Reduction Act with equity-centered implementation.</p>
+        <div class="project-tags">
+          <span>Policy Analysis</span><span>Environmental Health</span><span>Health Equity</span>
+        </div>
+        <a href="files/HHW_Policy_Brief.pdf" target="_blank" class="project-file-btn">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="12" y1="18" x2="12" y2="12"/><polyline points="9 15 12 18 15 15"/></svg>
+          Read Policy Brief (PDF)
+        </a>
+        <div class="related-exp">
+          <span class="exp-dot"></span> MPH Coursework · UNTHSC
+          <div class="tooltip">Written as part of MPH coursework, demonstrating policy analysis skills, environmental health knowledge, and ability to communicate complex health data at an accessible reading level.</div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ===== EXPERIENCE TAB ===== -->
+  <div class="tab-panel" id="tab-experience">
+    <div class="exp-list">
+
+      <div class="exp-card reveal">
+        <div class="exp-meta">
+          <div class="exp-date">Mar 2025 — Present</div>
+          <div class="exp-type">Biostatistics &<br>Program Evaluation</div>
+        </div>
+        <div class="exp-body">
+          <h3>Biostatistics Intern</h3>
+          <div class="org">Texas Center for Patient Safety <span>· Asthma 411 Program · Fort Worth, TX</span></div>
+          <ul class="exp-highlights">
+            <li>Conducted epidemiologic analysis across 10 ISDs (364 campuses, 240,784 students), producing tables, charts in R and Power BI dashboards.</li>
+            <li>Designed a visual SDO clinical decision algorithm deployed across 12 school districts for respiratory distress response.</li>
+            <li>Delivered the annual evaluation report: 5,012 instructional hours reclaimed, $157K+ financial benefits, 1:5 SROI.</li>
+            <li>Coordinated multi-site data collection and partner training for nurses and school health staff.</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="exp-card reveal">
+        <div class="exp-meta">
+          <div class="exp-date">Feb 2025 — Present</div>
+          <div class="exp-type">Clinical Research &<br>Data Management</div>
+        </div>
+        <div class="exp-body">
+          <h3>Graduate Research Assistant</h3>
+          <div class="org">UNTHSC College of Nursing <span>· Fort Worth, TX</span></div>
+          <ul class="exp-highlights">
+            <li>Built REDCap eCRF/CRF workflows; completed data entry, validation, and query-style cleanups in R — contributing directly to a peer-reviewed publication.</li>
+            <li>Performed ICC and kappa reliability analyses in SPSS to improve scoring consistency in VR simulation research.</li>
+            <li>Currently supporting maternal health simulation research (shoulder dystocia), managing pre-/post-assessment datasets.</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="exp-card reveal">
+        <div class="exp-meta">
+          <div class="exp-date">Nov 2024 — Present</div>
+          <div class="exp-type">Teaching &<br>Mentorship</div>
+        </div>
+        <div class="exp-body">
+          <h3>Peer Tutor</h3>
+          <div class="org">UNTHSC College of Public Health <span>· Fort Worth, TX</span></div>
+          <ul class="exp-highlights">
+            <li>Built applied practice sets covering disease surveillance, regression, ANOVA, GLMs, and nonparametric methods for 20+ students/month using R and SAS.</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="exp-card reveal">
+        <div class="exp-meta">
+          <div class="exp-date">May 2022 — May 2024</div>
+          <div class="exp-type">Clinical Research<br>Coordination</div>
+        </div>
+        <div class="exp-body">
+          <h3>Clinical Research Assistant / Dental Intern</h3>
+          <div class="org">Karnavati School of Dentistry <span>· India</span></div>
+          <ul class="exp-highlights">
+            <li>Coordinated a double-blind, split-mouth RCT: participant screening, informed consent, 72-hour follow-up with protocol-driven CRFs — published in <em>JCHR</em>.</li>
+            <li>Led a prospective outcomes study on anticoagulant/antiplatelet therapy patients, standardizing case documentation.</li>
+            <li>Assisted with specimen handling, labeling, and preservation while maintaining organized records and compliance.</li>
+            <li>Maintained GCP-supported trial operations: study files, protocol adherence tracking, IRB-ready documentation.</li>
+          </ul>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ===== PUBLICATIONS TAB ===== -->
+  <div class="tab-panel" id="tab-publications">
+    <div class="pub-list">
+
+      <div class="pub-card reveal">
+        <div class="pub-year">2025</div>
+        <div class="pub-info">
+          <h4>Using AI to Create Simulation Scenarios for a Screening Brief Intervention and Referral to Treatment Virtual Reality Simulation</h4>
+          <div class="journal">Clinical Simulation in Nursing · Vol 110, 101883</div>
+          <div class="authors">Wells-Beede E, Thai L, Seo JH, Godbole MS, <strong>Patel JH</strong>, Weston C, Kroll N.</div>
+        </div>
+        <div class="pub-actions">
+          <a href="https://doi.org/10.1016/j.ecns.2025.101883" target="_blank" class="pub-link">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+            DOI
+          </a>
+          <a href="files/VR_SBIRT_Publication.pdf" target="_blank" class="pub-link">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="12" y1="18" x2="12" y2="12"/><polyline points="9 15 12 18 15 15"/></svg>
+            PDF
+          </a>
+        </div>
+      </div>
+
+      <div class="pub-card reveal">
+        <div class="pub-year">2024</div>
+        <div class="pub-info">
+          <h4>Efficacy of Buprenorphine for Post Extraction Pain in Lower Third Molar Surgery: A Comparative Study</h4>
+          <div class="journal">Journal of Chemical Health Risks · Vol 14(1), 594–601</div>
+          <div class="authors">Vaghela D, <strong>Patel J</strong>, Patel A, Shah S, Patel H.</div>
+        </div>
+        <div class="pub-actions">
+          <a href="https://www.jchr.org/index.php/JCHR/article/view/2345" target="_blank" class="pub-link">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+            View Paper
+          </a>
+        </div>
+      </div>
+
+      <div class="pub-card reveal">
+        <div class="pub-year">2023</div>
+        <div class="pub-info">
+          <h4>Effectiveness of Tranexamic Acid Mouthrinse on Extraction Socket in Patients Undergoing Anticoagulant and Antiplatelet Therapy</h4>
+          <div class="journal">Journal of Chemical Health Risks · Vol 13(6), 3141–3149</div>
+          <div class="authors">Mistry E, Patel R, <strong>Patel J</strong>, Patel A, Shah R, Rana PT.</div>
+        </div>
+        <div class="pub-actions">
+          <a href="https://jchr.org/index.php/JCHR/article/view/2607" target="_blank" class="pub-link">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+            View Paper
+          </a>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- EDUCATION + SKILLS SIDE BY SIDE -->
+<div class="bottom-section" id="education-section">
+  <div class="bottom-block reveal">
+    <h2 class="bottom-block-title">Education</h2>
+
+    <div class="edu-card">
+      <div class="gpa">3.9</div>
+      <div class="degree">Master of Public Health</div>
+      <div class="school">University of North Texas Health Science Center</div>
+      <div class="period">May 2024 — Expected May 2026</div>
+      <div class="major">Concentration: Biostatistics</div>
+    </div>
+
+    <div class="edu-card">
+      <div class="gpa">3.69</div>
+      <div class="degree">Bachelor of Dental Surgery</div>
+      <div class="school">Karnavati School of Dentistry, India</div>
+      <div class="period">September 2019 — May 2024</div>
+      <div class="major">Major: Dental Surgery · 1 yr Dental Intern · 2 yrs Clinical Research Assistant</div>
+    </div>
+  </div>
+
+  <div class="bottom-block reveal">
+    <h2 class="bottom-block-title">Skills</h2>
+
+    <div class="skill-group">
+      <div class="skill-group-title">Statistical Methods</div>
+      <div class="skill-tags">
+        <span class="skill-tag">Logistic Regression</span>
+        <span class="skill-tag">Poisson</span>
+        <span class="skill-tag">ANOVA</span>
+        <span class="skill-tag">GLM</span>
+        <span class="skill-tag">Mixed Effects</span>
+        <span class="skill-tag">ICC / Kappa</span>
+        <span class="skill-tag">Survey-Weighted</span>
+      </div>
+    </div>
+
+    <div class="skill-group">
+      <div class="skill-group-title">Tools & Software</div>
+      <div class="skill-tags">
+        <span class="skill-tag">R</span>
+        <span class="skill-tag">SAS</span>
+        <span class="skill-tag">SPSS</span>
+        <span class="skill-tag">Excel</span>
+        <span class="skill-tag">Power BI</span>
+        <span class="skill-tag">Tableau</span>
+        <span class="skill-tag">ArcGIS Pro</span>
+        <span class="skill-tag">QGIS</span>
+        <span class="skill-tag">REDCap</span>
+      </div>
+    </div>
+
+    <div class="skill-group">
+      <div class="skill-group-title">Clinical Research</div>
+      <div class="skill-tags">
+        <span class="skill-tag">Multi-Site Coordination</span>
+        <span class="skill-tag">IRB Compliance</span>
+        <span class="skill-tag">GCP</span>
+        <span class="skill-tag">HIPAA</span>
+        <span class="skill-tag">Informed Consent</span>
+        <span class="skill-tag">eCRF / CRF</span>
+        <span class="skill-tag">QA/QC</span>
+      </div>
+    </div>
+
+    <div class="skill-group">
+      <div class="skill-group-title">Public Health</div>
+      <div class="skill-tags">
+        <span class="skill-tag">Surveillance</span>
+        <span class="skill-tag">Program Evaluation</span>
+        <span class="skill-tag">Epidemiology</span>
+        <span class="skill-tag">Health Disparities</span>
+        <span class="skill-tag">Health Literacy</span>
+        <span class="skill-tag">Data Visualization</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- CONTACT -->
+<section class="contact" id="contact">
+  <div class="reveal">
+    <h2>Let's work together.</h2>
+    <p class="sub">Whether it's a research role, clinical research coordination, or a public health opportunity — I'd love to connect.</p>
+    <div class="contact-links">
+      <a href="mailto:jayp73153@gmail.com" class="contact-link">✉ jayp73153@gmail.com</a>
+      <a href="tel:+14699277895" class="contact-link">📱 (469) 927-7895</a>
+      <a href="https://linkedin.com/in/" target="_blank" class="contact-link">🔗 LinkedIn</a>
+      <a href="files/Resume_Jay_Patel.pdf" target="_blank" class="contact-link" style="border-color:var(--accent);color:var(--accent);">↓ Download Resume</a>
+    </div>
+  </div>
+</section>
+
+<footer>© 2025 Jay Patel · Built for impact</footer>
+
+<script>
+// Cursor glow
+const glow = document.getElementById('cursorGlow');
+let mx=0,my=0,gx=0,gy=0;
+document.addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY;});
+function anim(){gx+=(mx-gx)*0.07;gy+=(my-gy)*0.07;glow.style.left=gx+'px';glow.style.top=gy+'px';requestAnimationFrame(anim);}
+anim();
+if('ontouchstart' in window) glow.style.display='none';
+
+// Nav hide on scroll
+let lastSc=0;const nav=document.getElementById('navbar');
+window.addEventListener('scroll',()=>{const c=window.scrollY;if(c>lastSc&&c>80)nav.classList.add('hidden');else nav.classList.remove('hidden');lastSc=c;});
+
+// Reveal on scroll
+const obs=new IntersectionObserver(es=>{es.forEach(e=>{if(e.isIntersecting)e.target.classList.add('visible');});},{threshold:0.08,rootMargin:'0px 0px -30px 0px'});
+document.querySelectorAll('.reveal').forEach(el=>obs.observe(el));
+
+// Tabs
+function switchTab(name){
+  document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+  document.querySelectorAll('.tab-panel').forEach(p=>p.classList.remove('active'));
+  document.getElementById('tab-'+name).classList.add('active');
+  event.target.classList.add('active');
+  // re-observe reveals in newly visible tab
+  document.querySelectorAll('#tab-'+name+' .reveal').forEach(el=>{el.classList.remove('visible');obs.observe(el);});
+}
+
+// Smooth scroll
+document.querySelectorAll('a[href^="#"]').forEach(a=>{
+  a.addEventListener('click',function(e){
+    e.preventDefault();
+    const t=document.querySelector(this.getAttribute('href'));
+    if(t){t.scrollIntoView({behavior:'smooth',block:'start'});document.getElementById('navLinks').classList.remove('open');}
+  });
+});
+</script>
+</body>
+</html>
